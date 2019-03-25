@@ -10,5 +10,6 @@ public:
 
 	CRay(void);
 	~CRay(void);
+	void generatePrimaryRay(int x, int y, CCamera &camera);
 };
 

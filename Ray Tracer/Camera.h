@@ -11,8 +11,16 @@ public:
 	float fov;
 	glm::vec3 up;
 	glm::vec3 target;
+	glm::mat3 uvo;
 
 	CCamera(void);
 	~CCamera(void);
+	void countUvo();
+
+private:
+	glm::vec3 countDir();
+	glm::vec3 countU(glm::vec3 dir);
+	glm::vec3 countV(glm::vec3 dir, glm::vec3 u);
+	glm::vec3 countO(glm::vec3 dir, glm::vec3 u, glm::vec3 v);
 };
 
