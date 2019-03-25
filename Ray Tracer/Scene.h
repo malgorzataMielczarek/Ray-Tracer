@@ -12,6 +12,6 @@ public:
 	CScene(void);
 	~CScene(void);
 
-	bool parse(std::string fname);
+	bool parse(std::string fname); //zaimplementowac scene z pliku
 };
 
