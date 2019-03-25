@@ -22,5 +22,7 @@ private:
 	void loadCamTarget(std::istringstream & iss);
 	void loadCamUp(std::istringstream & iss);
 	void loadSphere(std::istringstream &iss);
+	void loadTriangle(std::istringstream & iss);
+	void loadLight(std::istringstream & iss);
 };
 

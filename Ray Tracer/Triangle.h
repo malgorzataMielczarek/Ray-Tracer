@@ -5,8 +5,11 @@ public:
 	CTriangle(void);
 	~CTriangle(void);
 
-	//Wierzcholek 1, 2, 3
+	glm::vec3 p1;
+	glm::vec3 p2;
+	glm::vec3 p3;
 
-	float intersect(CRay* ray);
+	float intersect(CRay &ray);
+	bool isIntersected(CRay &ray);
 };
 

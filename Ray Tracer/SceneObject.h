@@ -10,6 +10,7 @@ public:
 	CSceneObject(void);
 	~CSceneObject(void);
 
-	virtual float intersect( CRay* ray ) = 0;
+	virtual float intersect(CRay &ray) = 0;
+	virtual bool isIntersected(CRay &ray) = 0;
 };
 

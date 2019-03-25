@@ -7,6 +7,7 @@ public:
 	~CSphere(void);
 	float r;//Promien
 	glm::vec3 o;//Srodek
-	float intersect(CRay* ray);
+	float intersect(CRay &ray);
+	bool isIntersected(CRay &ray);
 };
 

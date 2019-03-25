@@ -21,7 +21,7 @@ using namespace glm;
 int main(int argc, char** argv)
 {
 	CScene scene;
-	bool isread = scene.parse("../scene_simple.txt");
+	bool isread = scene.parse("../scene_final.txt");
 	printf("%s", isread ? "true" : "false");
 	CBitmap img;
 	img.init(scene.cam.mWidth, scene.cam.mHeight);
@@ -36,6 +36,7 @@ int run( CScene* scene, CBitmap& img ) {
 	scene->cam.countUvo();
 	for( int j = 0; j < scene->cam.mHeight; j++ ) {
 		for( int i = 0; i < scene->cam.mWidth; i++ ) {
+			float energy = 1.0;
 			CRay primaryRay;
 			primaryRay.generatePrimaryRay(i, j, scene->cam);
 			vec3 color = trace_ray(*scene, primaryRay);
@@ -56,7 +57,7 @@ vec3 trace_ray(CScene scene, CRay ray)
 	for (int i = 0; i < scene.mObjects.size(); i++)
 	{
 		CSceneObject *object=scene.mObjects[i];
-		float t = object->intersect(&ray);
+		float t = object->intersect(ray);
 		if(t>0)
 		{
 			return vec3(1, 0, 0);
@@ -64,6 +65,24 @@ vec3 trace_ray(CScene scene, CRay ray)
 	}
 	return vec3(0, 0, 0);
 }
+/*
+CSceneObject* findIntersection(CScene scene, CRay ray, bool closestIntersection)
+{
+	CSceneObject* intersectedObject = NULL;
+	for (int i = 0; i < scene.mObjects.size(); i++)
+	{
+		CSceneObject *object = scene.mObjects[i];
+		bool intersection = object->isIntersected(ray);
+		if (intersection)
+		{
+			if (closestIntersection)
+			{
+
+			}
+		}
+	}
+}
+*/
 // Sledzenie pojedynczego promienia
 int rayTrace( CRay &ray, CScene* scene, Output* res ) 
 {
