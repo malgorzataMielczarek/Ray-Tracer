@@ -37,9 +37,9 @@ int run( CScene* scene, CBitmap& img ) {
 	for( int j = 0; j < scene->cam.mHeight; j++ ) {
 		for( int i = 0; i < scene->cam.mWidth; i++ ) {
 			CRay primaryRay;
-			primaryRay.generatePrimaryRay(j, i, scene->cam);
+			primaryRay.generatePrimaryRay(i, j, scene->cam);
 			vec3 color = trace_ray(*scene, primaryRay);
-			img.setPixel(i, j, color);
+			img.setPixel(i, scene->cam.mHeight - j - 1, color);
 			/*vec3 color;
 			color.x = float(x) / scene->cam.mWidth;
 			color.y = float(y) / scene->cam.mHeight;
