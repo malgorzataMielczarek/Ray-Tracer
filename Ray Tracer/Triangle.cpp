@@ -55,5 +55,5 @@ bool CTriangle::isIntersected(CRay & ray)
 {
 	float t = intersect(ray);
 	glm::vec3 point = countIntersectionPoint(ray, t);
-	return false;//isPoinInsideTriangle(point);
+	return isPoinInsideTriangle(point);
 }
