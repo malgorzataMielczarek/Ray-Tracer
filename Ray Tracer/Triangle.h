@@ -10,6 +10,15 @@ public:
 	glm::vec3 p3;
 
 	float intersect(CRay &ray);
+
+private:
+	glm::vec3 countPlane();
+
+	glm::vec3 countIntersectionPoint(CRay & ray, float t);
+
+	bool isPoinInsideTriangle(glm::vec3 point);
+
+public:
 	bool isIntersected(CRay &ray);
 };
 

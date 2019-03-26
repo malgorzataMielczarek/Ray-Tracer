@@ -57,8 +57,7 @@ vec3 trace_ray(CScene scene, CRay ray)
 	for (int i = 0; i < scene.mObjects.size(); i++)
 	{
 		CSceneObject *object=scene.mObjects[i];
-		float t = object->intersect(ray);
-		if(t>0)
+		if(object->isIntersected(ray))
 		{
 			return vec3(1, 0, 0);
 		}
