@@ -12,7 +12,7 @@ public:
 	float intersect(CRay &ray);
 
 private:
-	glm::vec3 countPlane();
+	glm::vec3 countPlaneNormalVector();
 
 	glm::vec3 countIntersectionPoint(CRay & ray, float t);
 

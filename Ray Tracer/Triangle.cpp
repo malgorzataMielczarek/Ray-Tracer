@@ -14,24 +14,23 @@ CTriangle::~CTriangle(void)
 float CTriangle::intersect(CRay &ray)
 {
 	float t;
-	glm::vec3 vector = countPlane();
-	float D = -p1.x*vector.x - p1.y*vector.y - p1.z*vector.z;
-	t = -(vector.x*ray.pos.x + vector.y*ray.pos.y + vector.z*ray.pos.z + D) / (vector.x*ray.dir.x + vector.y*ray.dir.y + vector.z*ray.dir.z);
+	glm::vec3 vector = countPlaneNormalVector();
+	double A, B, C, D;
+	A = vector.x;
+	B = vector.y;
+	C = vector.z;
+	D = -1.0* A * p1.x - B * p1.y - C * p1.z;
+	t = -(A * ray.pos.x + B * ray.pos.y + C * ray.pos.z + D) / (A * ray.dir.x + B * ray.dir.y + C * ray.dir.z);
 	return t;
 }
 
-glm::vec3 CTriangle::countPlane()
+glm::vec3 CTriangle::countPlaneNormalVector()
 {
-	float A, B, C;
-	A = p1.y*(p2.z - p3.z) + p2.y*(p3.z - p1.z) + p3.y*(p1.z - p2.z);
-	B = p1.x*(p3.z - p2.z) + p2.x*(p1.z - p3.z) + p3.x*(p2.z - p1.z);
-	C = p1.x*(p2.y - p3.y) + p2.x*(p3.y - p1.y) + p3.x*(p1.y - p2.y);
-	return glm::normalize(glm::vec3(A, B, C));
-	/*glm::vec3 u,v,w;
-	u = glm::normalize(this->p3 - this->p2);
-	v = glm::normalize(this->p1 - this->p2);
-	w = glm::normalize(glm::cross(u, v));
-	return w;*/
+	glm::vec3 u,v,w;
+	u = this->p3 - this->p2;
+	v = this->p1 - this->p2;
+	w = glm::cross(u, v);
+	return w;
 }
 
 glm::vec3 CTriangle::countIntersectionPoint(CRay &ray, float t)
@@ -43,9 +42,9 @@ glm::vec3 CTriangle::countIntersectionPoint(CRay &ray, float t)
 bool CTriangle::isPoinInsideTriangle(glm::vec3 point)
 {
 	glm::vec3 v0, v1, v2;
-	v0 = glm::normalize(this->p3 - this->p1);
-	v1 = glm::normalize(this->p2 - this->p1);
-	v2 = glm::normalize(point - this->p1);
+	v0 = this->p3 - this->p1;
+	v1 = this->p2 - this->p1;
+	v2 = point - this->p1;
 	float dot00 = glm::dot(v0, v0);
 	float dot01 = glm::dot(v0, v1);
 	float dot02 = glm::dot(v0, v2);

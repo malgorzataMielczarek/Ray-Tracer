@@ -39,9 +39,9 @@ int run( CScene* scene, CBitmap& img ) {
 			float energy = 1.0;
 			CRay primaryRay;
 			primaryRay.generatePrimaryRay(i, j, scene->cam);
-			vec3 color = trace_ray(*scene, primaryRay);
-			color = gammaCorrectRBG(color);
-			img.setPixel(i, scene->cam.mHeight - j - 1, color);
+			vec3 basicColor = trace_ray(*scene, primaryRay);
+			//vec3 correctedColor = gammaCorrectRBG(basicColor);
+			img.setPixel(i, scene->cam.mHeight - j - 1, basicColor);
         }
 	}
 			
@@ -61,7 +61,7 @@ vec3 trace_ray(CScene scene, CRay ray)
 	return vec3(0, 0, 0);
 }
 
-vec3 gammaCorrectRBG(vec3 color)
+/*vec3 gammaCorrectRBG(vec3 color)
 {
 	double R = gammaCorrect(color.x);
 	double G = gammaCorrect(color.y);
@@ -81,7 +81,7 @@ double gammaCorrect(double color)
 		newColor = 1.55 * pow(color, 1 / 2.4) - 0.055;
 	}
 	return newColor;
-}
+}*/
 /*
 CSceneObject* findIntersection(CScene scene, CRay ray, bool closestIntersection)
 {
