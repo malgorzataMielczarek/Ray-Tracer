@@ -11,12 +11,13 @@ struct Output {
 	float color[3];
 };
 
+using namespace glm;
 
 int run( CScene* scene, CBitmap& img );
 glm::vec3 trace_ray(CScene scene, CRay ray);
 int rayTrace( CRay &ray, CScene* scene, Output* res );
-
-using namespace glm;
+vec3 gammaCorrectRBG(vec3 color);
+double gammaCorrect(double color);
 
 int main(int argc, char** argv)
 {
@@ -40,7 +41,7 @@ int run( CScene* scene, CBitmap& img ) {
 			CRay primaryRay;
 			primaryRay.generatePrimaryRay(i, j, scene->cam);
 			vec3 basicColor = trace_ray(*scene, primaryRay);
-			//vec3 correctedColor = gammaCorrectRBG(basicColor);
+			vec3 correctedColor = gammaCorrectRBG(basicColor);
 			img.setPixel(i, scene->cam.mHeight - j - 1, basicColor);
         }
 	}
@@ -61,11 +62,12 @@ vec3 trace_ray(CScene scene, CRay ray)
 	return vec3(0, 0, 0);
 }
 
-/*vec3 gammaCorrectRBG(vec3 color)
+vec3 gammaCorrectRBG(vec3 color)
 {
 	double R = gammaCorrect(color.x);
 	double G = gammaCorrect(color.y);
 	double B = gammaCorrect(color.z);
+
 	return vec3(R, G, B);
 }
 
@@ -81,7 +83,8 @@ double gammaCorrect(double color)
 		newColor = 1.55 * pow(color, 1 / 2.4) - 0.055;
 	}
 	return newColor;
-}*/
+}
+
 /*
 CSceneObject* findIntersection(CScene scene, CRay ray, bool closestIntersection)
 {
