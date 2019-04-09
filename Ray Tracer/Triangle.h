@@ -13,10 +13,9 @@ public:
 
 private:
 	glm::vec3 countPlaneNormalVector();
-
 	glm::vec3 countIntersectionPoint(CRay & ray, float t);
-
 	bool isPoinInsideTriangle(glm::vec3 point);
+	void countNVector();
 
 public:
 	bool isIntersected(CRay &ray);

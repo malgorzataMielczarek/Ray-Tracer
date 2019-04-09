@@ -42,7 +42,7 @@ int run( CScene* scene, CBitmap& img ) {
 			primaryRay.generatePrimaryRay(i, j, scene->cam);
 			vec3 basicColor = trace_ray(*scene, primaryRay);
 			vec3 correctedColor = gammaCorrectRBG(basicColor);
-			img.setPixel(i, scene->cam.mHeight - j - 1, basicColor);
+			img.setPixel(i, scene->cam.mHeight - j - 1, correctedColor);
         }
 	}
 			
@@ -56,7 +56,8 @@ vec3 trace_ray(CScene scene, CRay ray)
 		CSceneObject *object=scene.mObjects[i];
 		if(object->isIntersected(ray))
 		{
-			return vec3(1, 0, 0);
+			glm::vec3 color = object->countColorForAllLights(scene.mLights, ray, &scene.cam);
+			return color;
 		}
 	}
 	return vec3(0, 0, 0);
@@ -64,10 +65,12 @@ vec3 trace_ray(CScene scene, CRay ray)
 
 vec3 gammaCorrectRBG(vec3 color)
 {
-	double R = gammaCorrect(color.x);
-	double G = gammaCorrect(color.y);
-	double B = gammaCorrect(color.z);
-
+	float R = gammaCorrect(color.x);
+	float G = gammaCorrect(color.y);
+	float B = gammaCorrect(color.z);
+	R = glm::clamp(R, 0.0f, 1.0f);
+	G = glm::clamp(G, 0.0f, 1.0f);
+	B = glm::clamp(B, 0.0f, 1.0f);
 	return vec3(R, G, B);
 }
 

@@ -53,6 +53,7 @@ float CSphere::intersect(CRay &ray)
 			t = -1;
 		}
 	}
+	this->t = t;
 	return t;
 }
 
@@ -63,4 +64,10 @@ bool CSphere::isIntersected(CRay &ray)
 		return true;
 	else
 		return false;
+}
+
+void CSphere::countNVector()
+{
+	glm::vec3 nvector = this->pointOnSurface - this->o;
+	this->nVector = normalize(nvector);
 }
