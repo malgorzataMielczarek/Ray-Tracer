@@ -11,5 +11,6 @@ public:
 	CRay(void);
 	~CRay(void);
 	void generatePrimaryRay(int x, int y, CCamera &camera);
+	void generateShadowRay(glm::vec3 intersectionPoint, glm::vec3 directory);
 };
 

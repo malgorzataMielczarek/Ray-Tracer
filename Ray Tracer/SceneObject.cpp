@@ -2,6 +2,11 @@
 #include "SceneObject.h"
 
 
+float CSceneObject::getT()
+{
+	return this->t;
+}
+
 CSceneObject::CSceneObject(void)
 {
 }
@@ -38,6 +43,27 @@ glm::vec3 CSceneObject::countColorForAllLights(std::vector<CLight*> &mLights, CR
 		color = color + countColorSpecularForOneLight(light);
 	}
 	return color;
+}
+
+glm::vec3 CSceneObject::countColorForOneLight(CLight * light, CRay & ray, CCamera * camera)
+{
+	countNVector();
+	countVVector(camera);
+	glm::vec3 color = glm::vec3(0, 0, 0);
+	countLVector(light);
+	countHVector();
+	color = color + countColorAmbientForOneLight(light);
+	color = color + countColorDiffuseForOneLight(light);
+	color = color + countColorSpecularForOneLight(light);
+	return color;
+}
+
+CRay CSceneObject::generateSecondaryRay()
+{
+	CRay ray;
+	ray.pos = this->pointOnSurface;
+	ray.dir = this->vVector - (2 * glm::dot(this->vVector, this->nVector)) * this->nVector;
+	return ray;
 }
 
 glm::vec3 CSceneObject::countColorAmbientForOneLight(CLight * light)

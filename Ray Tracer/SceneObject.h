@@ -8,11 +8,12 @@ public:
 	glm::vec3 specular;
 	float reflect;
 	float shininess;
+	glm::vec3 pointOnSurface;
+	glm::vec3 lVector;
+	float getT();
 
 protected:
 	float t;
-	glm::vec3 pointOnSurface;
-	glm::vec3 lVector;
 	glm::vec3 vVector;
 	glm::vec3 nVector;
 	glm::vec3 hVector;
@@ -25,6 +26,10 @@ public:
 	virtual bool isIntersected(CRay &ray) = 0;
 	glm::vec3 countColorAmbientForAllLights(std::vector<CLight*> &mLights);
 	glm::vec3 countColorForAllLights(std::vector<CLight*> &mLights, CRay &ray, CCamera* camera);
+	glm::vec3 countColorForOneLight(CLight *light, CRay &ray, CCamera* camera);
+	CRay generateSecondaryRay();
+	void countPointOnSurface(CRay &ray);
+	void countLVector(CLight* light);
 private:
 	glm::vec3 countColorAmbientForOneLight(CLight* light);
 	glm::vec3 countColorDiffuseForOneLight(CLight* light);
@@ -32,8 +37,6 @@ private:
 	double countColorAmbientComponent(CLight* light, int numberOfComponent);
 	double countColorDiffuseComponent(CLight* light, int numberOfComponent);
 	double countColorSpecularComponent(CLight* light, int numberOfComponent);
-	void countPointOnSurface(CRay &ray);
-	void countLVector(CLight* light);
 	void countVVector(CCamera* camera);
 	void countHVector();
 protected:

@@ -51,16 +51,43 @@ int run( CScene* scene, CBitmap& img ) {
 
 vec3 trace_ray(CScene scene, CRay ray)
 {
+	glm::vec3 color = vec3(0, 0, 0);
+	float distance = std::numeric_limits<float>::infinity();
 	for (int i = 0; i < scene.mObjects.size(); i++)
 	{
 		CSceneObject *object=scene.mObjects[i];
 		if(object->isIntersected(ray))
 		{
-			glm::vec3 color = object->countColorForAllLights(scene.mLights, ray, &scene.cam);
-			return color;
+			float t = abs(object->getT());
+			if (t < distance)
+			{
+				distance = t;
+				object->countPointOnSurface(ray);
+
+				for (int i = 0; i < scene.mLights.size(); i++)
+				{
+					CLight *light = scene.mLights[i];
+					bool isShadow = false;
+					object->countLVector(light);
+					CRay shadowRay;
+					shadowRay.generateShadowRay(object->pointOnSurface, object->lVector);
+					for (int i = 0; i < scene.mObjects.size(); i++)
+					{
+						CSceneObject *object1 = scene.mObjects[i];
+						if (object1->isIntersected(shadowRay))
+						{
+							isShadow = true;
+						}
+					}
+					if (!isShadow)
+					{
+						color = color + object->countColorForOneLight(light, ray, &scene.cam);
+					}
+				}
+			}
 		}
 	}
-	return vec3(0, 0, 0);
+	return color;
 }
 
 vec3 gammaCorrectRBG(vec3 color)
