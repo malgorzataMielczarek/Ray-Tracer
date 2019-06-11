@@ -14,7 +14,7 @@ struct Output {
 using namespace glm;
 
 int run( CScene* scene, CBitmap& img );
-glm::vec3 trace_ray(CScene scene, CRay ray);
+glm::vec3 trace_ray(CScene scene, CRay ray, float energy);
 int rayTrace( CRay &ray, CScene* scene, Output* res );
 vec3 gammaCorrectRBG(vec3 color);
 double gammaCorrect(double color);
@@ -40,7 +40,7 @@ int run( CScene* scene, CBitmap& img ) {
 			float energy = 1.0;
 			CRay primaryRay;
 			primaryRay.generatePrimaryRay(i, j, scene->cam);
-			vec3 basicColor = trace_ray(*scene, primaryRay);
+			vec3 basicColor = trace_ray(*scene, primaryRay,energy);
 			vec3 correctedColor = gammaCorrectRBG(basicColor);
 			img.setPixel(i, scene->cam.mHeight - j - 1, correctedColor);
         }
@@ -49,13 +49,14 @@ int run( CScene* scene, CBitmap& img ) {
 	return 0;
 }
 
-vec3 trace_ray(CScene scene, CRay ray)
+vec3 trace_ray(CScene scene, CRay ray, float energy)
 {
 	glm::vec3 color = vec3(0, 0, 0);
+	CSceneObject *object;
 	float distance = std::numeric_limits<float>::infinity();
 	for (int i = 0; i < scene.mObjects.size(); i++)
 	{
-		CSceneObject *object=scene.mObjects[i];
+		object=scene.mObjects[i];
 		if(object->isIntersected(ray))
 		{
 			float t = abs(object->getT());
@@ -64,16 +65,16 @@ vec3 trace_ray(CScene scene, CRay ray)
 				distance = t;
 				object->countPointOnSurface(ray);
 
-				for (int i = 0; i < scene.mLights.size(); i++)
+				for (int L = 0; L < scene.mLights.size(); L++)
 				{
-					CLight *light = scene.mLights[i];
+					CLight *light = scene.mLights[L];
 					bool isShadow = false;
 					object->countLVector(light);
 					CRay shadowRay;
 					shadowRay.generateShadowRay(object->pointOnSurface, object->lVector);
-					for (int i = 0; i < scene.mObjects.size(); i++)
+					for (int j = 0; j < scene.mObjects.size(); j++)
 					{
-						CSceneObject *object1 = scene.mObjects[i];
+						CSceneObject *object1 = scene.mObjects[j];
 						if (object1->isIntersected(shadowRay))
 						{
 							isShadow = true;
@@ -81,12 +82,20 @@ vec3 trace_ray(CScene scene, CRay ray)
 					}
 					if (!isShadow)
 					{
-						color = color + object->countColorForOneLight(light, ray, &scene.cam);
+						color = color + energy*object->countColorForOneLight(light, ray, &scene.cam);
 					}
 				}
 			}
 		}
 	}
+	energy -= 0.1;
+	if (energy < 0.00001)
+	{
+		return color;
+	}
+	CRay secondaryRay;
+	secondaryRay.generateSecondaryRay(object->pointOnSurface, ray.dir, object->nVector);
+	color = color + energy * trace_ray(scene, secondaryRay, energy);
 	return color;
 }
 

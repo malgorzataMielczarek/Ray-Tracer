@@ -102,14 +102,14 @@ double CSceneObject::countColorAmbientComponent(CLight * light, int numberOfComp
 
 double CSceneObject::countColorDiffuseComponent(CLight * light, int numberOfComponent)
 {
-	double colorDiffuseComponent = glm::dot(this->lVector, this->nVector);
+	double colorDiffuseComponent = glm::clamp(glm::dot(this->lVector, this->nVector),0.f,1.f);
 	colorDiffuseComponent = this->diffuse[numberOfComponent]*light->diffuse[numberOfComponent] * colorDiffuseComponent;
 	return colorDiffuseComponent;
 }
 
 double CSceneObject::countColorSpecularComponent(CLight * light, int numberOfComponent)
 {
-	double colorSpecularComponent = pow(glm::dot(this->nVector, this->hVector), this->shininess);
+	double colorSpecularComponent = pow(glm::clamp(glm::dot(this->nVector, this->hVector),0.f,1.f), this->shininess);
 	colorSpecularComponent = this->specular[numberOfComponent]*light->specular[numberOfComponent] * colorSpecularComponent;
 	return colorSpecularComponent;
 }

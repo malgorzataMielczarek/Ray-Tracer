@@ -10,12 +10,12 @@ public:
 	float shininess;
 	glm::vec3 pointOnSurface;
 	glm::vec3 lVector;
+	glm::vec3 nVector;
 	float getT();
 
 protected:
 	float t;
 	glm::vec3 vVector;
-	glm::vec3 nVector;
 	glm::vec3 hVector;
 
 public:
