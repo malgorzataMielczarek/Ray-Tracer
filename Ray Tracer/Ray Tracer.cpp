@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 	return 0;
 }
 
-// G³ówna pêtla ray tracer'a
+// GÂ³Ã³wna pÃªtla ray tracer'a
 int run( CScene* scene, CBitmap& img ) {
 	scene->cam.countUvo();
 	for( int j = 0; j < scene->cam.mHeight; j++ ) {
@@ -56,6 +56,7 @@ vec3 trace_ray(CScene scene, CRay ray, float energy)
 	float distance = std::numeric_limits<float>::infinity();
 	for (int i = 0; i < scene.mObjects.size(); i++)
 	{
+
 		object=scene.mObjects[i];
 		if(object->isIntersected(ray))
 		{
