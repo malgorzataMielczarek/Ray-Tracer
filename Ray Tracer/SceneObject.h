@@ -12,6 +12,7 @@ public:
 	glm::vec3 lVector;
 	glm::vec3 nVector;
 	float getT();
+	float objectRefractionFactor;
 
 protected:
 	float t;

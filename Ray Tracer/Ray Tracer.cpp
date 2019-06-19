@@ -88,7 +88,7 @@ vec3 trace_ray(CScene scene, CRay ray, float energy)
 			}
 		}
 	}
-	energy -= 0.1;
+	energy = energy*0.5;
 	if (energy < 0.00001)
 	{
 		return color;
@@ -96,6 +96,12 @@ vec3 trace_ray(CScene scene, CRay ray, float energy)
 	CRay secondaryRay;
 	secondaryRay.generateSecondaryRay(object->pointOnSurface, ray.dir, object->nVector);
 	color = color + energy * trace_ray(scene, secondaryRay, energy);
+	//CRay refractedRay;
+	//if (ray.refractionFactor != object->objectRefractionFactor)
+	//{
+		//refractedRay.generateRefractedRay(object->nVector, object->pointOnSurface, object->objectRefractionFactor, &ray);
+	//}
+	//color = color + energy * trace_ray(scene, refractedRay, energy);
 	return color;
 }
 

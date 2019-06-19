@@ -110,8 +110,8 @@ void CScene::loadCamUp(std::istringstream &iss)
 
 void CScene::loadSphere(std::istringstream &iss)
 {
-	float r, o_x, o_y, o_z, reflect, amb_r, amb_g, amb_b, diff_r, diff_g, diff_b, spec_r, spec_g, spec_b, shininess;
-	iss >> r >> o_x >> o_y >> o_z >> reflect >> amb_r >> amb_g >> amb_b >> diff_r >> diff_g >> diff_b >> spec_r >> spec_g >> spec_b >> shininess;
+	float r, o_x, o_y, o_z, reflect, amb_r, amb_g, amb_b, diff_r, diff_g, diff_b, spec_r, spec_g, spec_b, shininess, refractionFactor;
+	iss >> r >> o_x >> o_y >> o_z >> reflect >> amb_r >> amb_g >> amb_b >> diff_r >> diff_g >> diff_b >> spec_r >> spec_g >> spec_b >> shininess>>refractionFactor;
 	CSphere *sphere = new CSphere;
 	sphere->r = r;
 	sphere->o = glm::vec3(o_x, o_y, o_z);
@@ -120,13 +120,14 @@ void CScene::loadSphere(std::istringstream &iss)
 	sphere->diffuse = glm::vec3(diff_r, diff_g, diff_b);
 	sphere->specular = glm::vec3(spec_r, spec_g, spec_b);
 	sphere->shininess = shininess;
+	sphere->objectRefractionFactor = refractionFactor;
 	this->mObjects.push_back(sphere);
 }
 
 void CScene::loadTriangle(std::istringstream &iss)
 {
-	float p0_x, p0_y, p0_z, p1_x, p1_y, p1_z, p2_x, p2_y, p2_z, reflect, amb_r, amb_g, amb_b, diff_r, diff_g, diff_b, spec_r, spec_g, spec_b, shininess;
-	iss >> p0_x >> p0_y >> p0_z >> p1_x >> p1_y >> p1_z >> p2_x >> p2_y >> p2_z >> reflect >> amb_r >> amb_g >> amb_b >> diff_r >> diff_g >> diff_b >> spec_r >> spec_g >> spec_b >> shininess;
+	float p0_x, p0_y, p0_z, p1_x, p1_y, p1_z, p2_x, p2_y, p2_z, reflect, amb_r, amb_g, amb_b, diff_r, diff_g, diff_b, spec_r, spec_g, spec_b, shininess, refractionFactor;
+	iss >> p0_x >> p0_y >> p0_z >> p1_x >> p1_y >> p1_z >> p2_x >> p2_y >> p2_z >> reflect >> amb_r >> amb_g >> amb_b >> diff_r >> diff_g >> diff_b >> spec_r >> spec_g >> spec_b >> shininess>>refractionFactor;
 	CTriangle *triangle = new CTriangle;
 	triangle->p1 = glm::vec3(p0_x, p0_y, p0_z);
 	triangle->p2 = glm::vec3(p1_x, p1_y, p1_z);
@@ -136,6 +137,7 @@ void CScene::loadTriangle(std::istringstream &iss)
 	triangle->diffuse = glm::vec3(diff_r, diff_g, diff_b);
 	triangle->specular = glm::vec3(spec_r, spec_g, spec_b);
 	triangle->shininess = shininess;
+	triangle->objectRefractionFactor = refractionFactor;
 	this->mObjects.push_back(triangle);
 }
 
