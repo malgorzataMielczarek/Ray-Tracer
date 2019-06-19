@@ -21,6 +21,7 @@ float CTriangle::intersect(CRay &ray)
 	C = vector.z;
 	D = -1.0* A * p1.x - B * p1.y - C * p1.z;
 	t = -(A * ray.pos.x + B * ray.pos.y + C * ray.pos.z + D) / (A * ray.dir.x + B * ray.dir.y + C * ray.dir.z);
+	this->t = t;
 	return t;
 }
 
@@ -56,9 +57,15 @@ bool CTriangle::isPoinInsideTriangle(glm::vec3 point)
 	return (u >= 0) && (v >= 0) && (u + v < 1);
 }
 
+void CTriangle::countNVector()
+{
+	glm::vec3 nvector = glm::cross((this->p2 - this->p1), (this->p3 - this->p1));
+	this->nVector = normalize(nvector);
+}
+
 bool CTriangle::isIntersected(CRay & ray)
 {
 	float t = intersect(ray);
 	glm::vec3 point = countIntersectionPoint(ray, t);
-	return isPoinInsideTriangle(point);
+	return t>0&isPoinInsideTriangle(point);
 }

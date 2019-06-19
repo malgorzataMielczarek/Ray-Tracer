@@ -9,5 +9,6 @@ public:
 	glm::vec3 o;//Srodek
 	float intersect(CRay &ray);
 	bool isIntersected(CRay &ray);
+	void countNVector();
 };
 

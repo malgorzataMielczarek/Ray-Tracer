@@ -14,7 +14,7 @@ struct Output {
 using namespace glm;
 
 int run( CScene* scene, CBitmap& img );
-glm::vec3 trace_ray(CScene scene, CRay ray);
+glm::vec3 trace_ray(CScene scene, CRay ray, float energy);
 int rayTrace( CRay &ray, CScene* scene, Output* res );
 vec3 gammaCorrectRBG(vec3 color);
 double gammaCorrect(double color);
@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 	return 0;
 }
 
-// G³ówna pêtla ray tracer'a
+// GÂ³Ã³wna pÃªtla ray tracer'a
 int run( CScene* scene, CBitmap& img ) {
 	scene->cam.countUvo();
 	for( int j = 0; j < scene->cam.mHeight; j++ ) {
@@ -40,34 +40,80 @@ int run( CScene* scene, CBitmap& img ) {
 			float energy = 1.0;
 			CRay primaryRay;
 			primaryRay.generatePrimaryRay(i, j, scene->cam);
-			vec3 basicColor = trace_ray(*scene, primaryRay);
+			vec3 basicColor = trace_ray(*scene, primaryRay,energy);
 			vec3 correctedColor = gammaCorrectRBG(basicColor);
-			img.setPixel(i, scene->cam.mHeight - j - 1, basicColor);
+			img.setPixel(i, scene->cam.mHeight - j - 1, correctedColor);
         }
 	}
 			
 	return 0;
 }
 
-vec3 trace_ray(CScene scene, CRay ray)
+vec3 trace_ray(CScene scene, CRay ray, float energy)
 {
+	glm::vec3 color = vec3(0, 0, 0);
+	CSceneObject *object;
+	float distance = std::numeric_limits<float>::infinity();
 	for (int i = 0; i < scene.mObjects.size(); i++)
 	{
-		CSceneObject *object = scene.mObjects[i];
-		if (object->isIntersected(ray))
+
+		object=scene.mObjects[i];
+		if(object->isIntersected(ray))
 		{
-			return vec3(1, 0, 0);
+			float t = abs(object->getT());
+			if (t < distance)
+			{
+				distance = t;
+				object->countPointOnSurface(ray);
+
+				for (int L = 0; L < scene.mLights.size(); L++)
+				{
+					CLight *light = scene.mLights[L];
+					bool isShadow = false;
+					object->countLVector(light);
+					CRay shadowRay;
+					shadowRay.generateShadowRay(object->pointOnSurface, object->lVector);
+					for (int j = 0; j < scene.mObjects.size(); j++)
+					{
+						CSceneObject *object1 = scene.mObjects[j];
+						if (object1->isIntersected(shadowRay))
+						{
+							isShadow = true;
+						}
+					}
+					if (!isShadow)
+					{
+						color = color + energy*object->countColorForOneLight(light, ray, &scene.cam);
+					}
+				}
+			}
 		}
 	}
-	return vec3(0, 0, 0);
+	energy = energy*0.5;
+	if (energy < 0.00001)
+	{
+		return color;
+	}
+	CRay secondaryRay;
+	secondaryRay.generateSecondaryRay(object->pointOnSurface, ray.dir, object->nVector);
+	color = color + energy * trace_ray(scene, secondaryRay, energy);
+	//CRay refractedRay;
+	//if (ray.refractionFactor != object->objectRefractionFactor)
+	//{
+		//refractedRay.generateRefractedRay(object->nVector, object->pointOnSurface, object->objectRefractionFactor, &ray);
+	//}
+	//color = color + energy * trace_ray(scene, refractedRay, energy);
+	return color;
 }
 
 vec3 gammaCorrectRBG(vec3 color)
 {
-	double R = gammaCorrect(color.x);
-	double G = gammaCorrect(color.y);
-	double B = gammaCorrect(color.z);
-
+	float R = gammaCorrect(color.x);
+	float G = gammaCorrect(color.y);
+	float B = gammaCorrect(color.z);
+	R = glm::clamp(R, 0.0f, 1.0f);
+	G = glm::clamp(G, 0.0f, 1.0f);
+	B = glm::clamp(B, 0.0f, 1.0f);
 	return vec3(R, G, B);
 }
 
